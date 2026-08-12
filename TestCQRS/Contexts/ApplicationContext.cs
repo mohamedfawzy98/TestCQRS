@@ -13,5 +13,6 @@ namespace TestCQRS.Contexts
         public DbSet<Course> Courses { get; set; }
         public DbSet<Instructor> instructors { get; set; }
         public  DbSet<PointInstructor> pointInstructors { get; set; }
+        public DbSet<TestCQRS.Models.Notfigation>   Notfigations { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using TestCQRS.Contexts;
 using TestCQRS.Models;
@@ -26,14 +27,23 @@ namespace TestCQRS
 
             builder.Services.AddScoped<IReposirory<Course>, Reposirory<Course>>();
             builder.Services.AddScoped<IReposirory<PointInstructor>, Reposirory<PointInstructor>>();
+            builder.Services.AddScoped<IReposirory<TestCQRS.Models.Notfigation>, Reposirory<TestCQRS.Models.Notfigation>>();
 
             // Registers all Handlers, Behaviors, and Prerequests from the Assembly where 'Program' is defined
             builder.Services.AddMediatR(cfg => {
                 cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
             });
 
+            builder.Services.AddHangfire(config =>
+            {
+                config.UseSqlServerStorage(builder.Configuration.GetConnectionString("Defualt"));
+            });
+
+            builder.Services.AddHangfireServer();
 
             var app = builder.Build();
+
+            app.UseHangfireDashboard("/hangfire");
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

@@ -1,10 +1,13 @@
-﻿using MediatR;
+﻿using Hangfire;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using TestCQRS.BackGroundServices;
 using TestCQRS.Courses.Command;
 using TestCQRS.Courses.Query;
 using TestCQRS.Dtos;
+using TestCQRS.Notfigation.Command;
 using TestCQRS.Orchastretor.CourseOrch.Command;
 using TestCQRS.VM;
 
@@ -32,7 +35,15 @@ namespace TestCQRS.Controllers
             // EventSourse
             await _mediator.Send(new AddCourseCommand(name, Hours, InstId));
 
+            // Fire And Forget Job
+            var command = new AddNotfigationCommand(
+                "Notfigation Add Course",
+                $"{name} Course is Added Now",
+                DateTime.Now,
+                1
+            );
 
+            BackgroundJob.Enqueue<NotificationJob>(job => job.SendNotification(command));
             return Ok("تم الحفظ بنجاح");
         }
 
