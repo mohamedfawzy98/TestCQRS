@@ -27,6 +27,7 @@ namespace TestCQRS
 
             builder.Services.AddScoped<IReposirory<Course>, Reposirory<Course>>();
             builder.Services.AddScoped<IReposirory<PointInstructor>, Reposirory<PointInstructor>>();
+            builder.Services.AddScoped<IReposirory<Instructor>, Reposirory<Instructor>>();
             builder.Services.AddScoped<IReposirory<TestCQRS.Models.Notfigation>, Reposirory<TestCQRS.Models.Notfigation>>();
 
             // Registers all Handlers, Behaviors, and Prerequests from the Assembly where 'Program' is defined
