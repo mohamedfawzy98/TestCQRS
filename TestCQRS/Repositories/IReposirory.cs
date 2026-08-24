@@ -8,7 +8,6 @@ namespace TestCQRS.Repositories
         Task Add(T entity);
         IQueryable<T> GetAll();
         IQueryable<T> Get(Expression<Func<T, bool>> prdecit);
-
         Task SaveChanges();
     }
 }

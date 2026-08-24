@@ -61,5 +61,17 @@ namespace TestCQRS.Controllers
 
             return ResultVm;
         }
+
+        [HttpGet("GetAll")]
+        public async Task<IEnumerable<GetCourseVM>> GetAllCourse()
+        {
+            var Result = await _mediator.Send(new GetAllQuery());
+            return Result.Select(c => new GetCourseVM
+            {
+                Name = c.Name,
+                Hours = c.Hours,
+                InstructorName = c.InstructorName
+            });
+        }
     }
 }
