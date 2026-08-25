@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using TestCQRS.BackGroundServices;
 using TestCQRS.Dtos;
 using TestCQRS.Instructors.Command;
+using TestCQRS.Instructors.Query;
 using TestCQRS.Notfigation.Command;
 using TestCQRS.VM;
 
@@ -39,6 +40,17 @@ namespace TestCQRS.Controllers
 
             BackgroundJob.Enqueue<NotificationJob>(job => job.SendNotification(command));
             return Ok("تم الحفظ بنجاح");
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<PointInstructorVM>> GetAllInstructor()
+        {
+            var Result = await _mediator.Send(new GetPointInstructorQuery());
+            return Result.Select(c => new PointInstructorVM
+            {
+                NameInst = c.NameInst,
+                Points = c.Points
+            });
         }
     }
 }

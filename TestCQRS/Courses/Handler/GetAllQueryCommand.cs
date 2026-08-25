@@ -17,13 +17,15 @@ namespace TestCQRS.Courses.Handler
         }
         public async Task<IEnumerable<GetCoursesDTO>> Handle(GetAllQuery request, CancellationToken cancellationToken)
         {
-         var courses = await _reposirory.GetAll().ToListAsync();
-         return courses.Select(c => new GetCoursesDTO
+         var courses = await _reposirory.GetAll().
+          Select(c => new GetCoursesDTO
          {
              Name = c.Name,
              Hours = c.Hours,
-             InstructorName = c.Instructor?.Name ?? ""
-         });
+             InstructorName = c.Instructor != null ? c.Instructor.Name : "No Instructor"
+          }).ToListAsync(cancellationToken);
+
+            return courses;
         }
     }
 }
