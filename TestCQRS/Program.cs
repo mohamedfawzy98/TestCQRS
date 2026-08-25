@@ -27,6 +27,7 @@ namespace TestCQRS
 
             builder.Services.AddScoped<IReposirory<Course>, Reposirory<Course>>();
             builder.Services.AddScoped<IReposirory<PointInstructor>, Reposirory<PointInstructor>>();
+            builder.Services.AddScoped<IReposirory<Exam>, Reposirory<Exam>>();
             builder.Services.AddScoped<IReposirory<Instructor>, Reposirory<Instructor>>();
             builder.Services.AddScoped<IReposirory<TestCQRS.Models.Notfigation>, Reposirory<TestCQRS.Models.Notfigation>>();
 
