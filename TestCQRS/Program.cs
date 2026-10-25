@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TestCQRS.Contexts;
 using TestCQRS.Models;
 using TestCQRS.Repositories;
+using TestCQRS.Services;
 
 namespace TestCQRS
 {
@@ -30,9 +31,11 @@ namespace TestCQRS
             builder.Services.AddScoped<IReposirory<Exam>, Reposirory<Exam>>();
             builder.Services.AddScoped<IReposirory<Instructor>, Reposirory<Instructor>>();
             builder.Services.AddScoped<IReposirory<TestCQRS.Models.Notfigation>, Reposirory<TestCQRS.Models.Notfigation>>();
+            builder.Services.AddSingleton(typeof(RabbitMQServices));
 
             // Registers all Handlers, Behaviors, and Prerequests from the Assembly where 'Program' is defined
-            builder.Services.AddMediatR(cfg => {
+            builder.Services.AddMediatR(cfg =>
+            {
                 cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
             });
 

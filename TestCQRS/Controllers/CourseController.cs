@@ -9,6 +9,7 @@ using TestCQRS.Courses.Query;
 using TestCQRS.Dtos;
 using TestCQRS.Notfigation.Command;
 using TestCQRS.Orchastretor.CourseOrch.Command;
+using TestCQRS.Services;
 using TestCQRS.VM;
 
 namespace TestCQRS.Controllers
@@ -18,10 +19,11 @@ namespace TestCQRS.Controllers
     public class CourseController : ControllerBase
     {
         private readonly IMediator _mediator;
-
-        public CourseController(IMediator mediator)
+        private readonly RabbitMQServices _rabbitMQServices;
+        public CourseController(IMediator mediator, RabbitMQServices rabbitMQServices)
         {
             _mediator = mediator;
+            _rabbitMQServices = rabbitMQServices;
         }
         [HttpPost]
         public async Task<IActionResult> AddCourse(string name, int Hours, int InstId, int Point)
@@ -72,6 +74,17 @@ namespace TestCQRS.Controllers
                 Hours = c.Hours,
                 InstructorName = c.InstructorName
             });
+        }
+
+
+        // Test RabbitMQ
+        [HttpPost("SendMessage")]
+        public IActionResult SendMessage(CourseDto course)
+        {
+            var message = Newtonsoft.Json.JsonConvert.SerializeObject(course);
+            _rabbitMQServices.PublishMessage(message);
+
+            return Ok("Message sent to RabbitMQ successfully.");
         }
     }
 }
