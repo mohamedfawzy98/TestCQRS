@@ -32,7 +32,7 @@ namespace TestCQRS
             builder.Services.AddScoped<IReposirory<Instructor>, Reposirory<Instructor>>();
             builder.Services.AddScoped<IReposirory<TestCQRS.Models.Notfigation>, Reposirory<TestCQRS.Models.Notfigation>>();
             builder.Services.AddSingleton(typeof(RabbitMQServices));
-
+            builder.Services.AddHostedService<RabbitMQConsumeServices>();
             // Registers all Handlers, Behaviors, and Prerequests from the Assembly where 'Program' is defined
             builder.Services.AddMediatR(cfg =>
             {

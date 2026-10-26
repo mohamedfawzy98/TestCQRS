@@ -9,6 +9,7 @@ using TestCQRS.Courses.Query;
 using TestCQRS.Dtos;
 using TestCQRS.Notfigation.Command;
 using TestCQRS.Orchastretor.CourseOrch.Command;
+using TestCQRS.RabbitMQMessages;
 using TestCQRS.Services;
 using TestCQRS.VM;
 
@@ -81,8 +82,28 @@ namespace TestCQRS.Controllers
         [HttpPost("SendMessage")]
         public IActionResult SendMessage(CourseDto course)
         {
-            var message = Newtonsoft.Json.JsonConvert.SerializeObject(course);
-            _rabbitMQServices.PublishMessage(message);
+            // here send GenralData
+
+            // var message = Newtonsoft.Json.JsonConvert.SerializeObject(course);
+            //_rabbitMQServices.PublishMessage(message);
+
+            // Send to Specific Data And Use BaseMessage
+
+            var data = Newtonsoft.Json.JsonConvert.SerializeObject(course);
+            var BaseMessge = new AddCourseMessage
+            {
+                DateSender = DateTime.Now,
+                Sender = "CourseController",
+                Acion = "AddCourse",
+                Name = course.Name,
+                Hours = course.Hours,
+                InstructorId = course.InstructorId
+            };
+
+            BaseMessge.MassegeType = BaseMessge.GetType().Name;
+
+            var msg = Newtonsoft.Json.JsonConvert.SerializeObject(BaseMessge);
+            _rabbitMQServices.PublishMessage(msg);
 
             return Ok("Message sent to RabbitMQ successfully.");
         }
