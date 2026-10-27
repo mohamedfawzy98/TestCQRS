@@ -1,7 +1,9 @@
 
 using Hangfire;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using TestCQRS.Contexts;
+using TestCQRS.MassTransit;
 using TestCQRS.Models;
 using TestCQRS.Repositories;
 using TestCQRS.Services;
@@ -45,6 +47,21 @@ namespace TestCQRS
             });
 
             builder.Services.AddHangfireServer();
+
+            builder.Services.AddMassTransit(cnf =>
+            {
+                cnf.AddConsumer<OrderCreatedConsumer>();
+               // cnf.AddConsumers(typeof(Program).Assembly);
+               cnf.UsingRabbitMq((context, cfg) =>
+                {
+                   // cfg.Host(builder.Configuration.GetConnectionString("RabbitMQ"));
+                    cfg.Host("localhost");
+                    cfg.ReceiveEndpoint("order-created-queue", e =>
+                    {
+                        e.ConfigureConsumer<OrderCreatedConsumer>(context);
+                    });
+                });
+            });
 
             var app = builder.Build();
 

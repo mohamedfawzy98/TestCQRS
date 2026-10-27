@@ -1,4 +1,5 @@
 ﻿using Hangfire;
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using TestCQRS.BackGroundServices;
 using TestCQRS.Courses.Command;
 using TestCQRS.Courses.Query;
 using TestCQRS.Dtos;
+using TestCQRS.MassTransit;
 using TestCQRS.Notfigation.Command;
 using TestCQRS.Orchastretor.CourseOrch.Command;
 using TestCQRS.RabbitMQMessages;
@@ -21,10 +23,13 @@ namespace TestCQRS.Controllers
     {
         private readonly IMediator _mediator;
         private readonly RabbitMQServices _rabbitMQServices;
-        public CourseController(IMediator mediator, RabbitMQServices rabbitMQServices)
+        private readonly IPublishEndpoint _publishEndpoint;
+
+        public CourseController(IMediator mediator, RabbitMQServices rabbitMQServices , IPublishEndpoint publishEndpoint)
         {
             _mediator = mediator;
             _rabbitMQServices = rabbitMQServices;
+            _publishEndpoint = publishEndpoint;
         }
         [HttpPost]
         public async Task<IActionResult> AddCourse(string name, int Hours, int InstId, int Point)
@@ -106,6 +111,14 @@ namespace TestCQRS.Controllers
             _rabbitMQServices.PublishMessage(msg);
 
             return Ok("Message sent to RabbitMQ successfully.");
+        }
+
+        [HttpGet("TestMassTransit")]
+        public IActionResult TestMassTransit()
+        {
+            _publishEndpoint.Publish<ICreatedOrder>(new { Id = 1 , Address = "Alex"});
+
+            return Ok("Test MassTransit DONE");
         }
     }
 }
