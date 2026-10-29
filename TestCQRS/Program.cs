@@ -48,17 +48,23 @@ namespace TestCQRS
 
             builder.Services.AddHangfireServer();
 
+            // Cinfigure MassTransit
             builder.Services.AddMassTransit(cnf =>
             {
-                cnf.AddConsumer<OrderCreatedConsumer>();
-               // cnf.AddConsumers(typeof(Program).Assembly);
+              //  cnf.AddConsumer<OrderCreatedConsumer>();
+                cnf.AddConsumer<CourseCreatedConsumer>();
+               // cnf.AddConsumers(typeof(Program).Assembly);   // if All Consumer
                cnf.UsingRabbitMq((context, cfg) =>
                 {
                    // cfg.Host(builder.Configuration.GetConnectionString("RabbitMQ"));
                     cfg.Host("localhost");
-                    cfg.ReceiveEndpoint("order-created-queue", e =>
+                    //cfg.ReceiveEndpoint("order-created-queue", e =>
+                    //{
+                    //    e.ConfigureConsumer<OrderCreatedConsumer>(context);
+                    //});
+                    cfg.ReceiveEndpoint("Course-created-queue", e =>
                     {
-                        e.ConfigureConsumer<OrderCreatedConsumer>(context);
+                        e.ConfigureConsumer<CourseCreatedConsumer>(context);
                     });
                 });
             });

@@ -9,6 +9,7 @@ using TestCQRS.Courses.Command;
 using TestCQRS.Courses.Query;
 using TestCQRS.Dtos;
 using TestCQRS.MassTransit;
+using TestCQRS.Models;
 using TestCQRS.Notfigation.Command;
 using TestCQRS.Orchastretor.CourseOrch.Command;
 using TestCQRS.RabbitMQMessages;
@@ -117,6 +118,14 @@ namespace TestCQRS.Controllers
         public IActionResult TestMassTransit()
         {
             _publishEndpoint.Publish<ICreatedOrder>(new { Id = 1 , Address = "Alex"});
+
+            return Ok("Test MassTransit DONE");
+        }
+
+        [HttpPost("AddCourseByMassTransit")]
+        public IActionResult AddCourseByMassTransit()
+        {
+            _publishEndpoint.Publish<ICreateCourse>(new {Name ="Arabic" , Hours = 10 , InstructorId = 1});
 
             return Ok("Test MassTransit DONE");
         }
